@@ -471,3 +471,6 @@ $RECYCLE.BIN/
 
 # Ignore development settings
 appsettings.Development.json
+
+# Ignore migrations
+**/Migrations/
