@@ -1,4 +1,3 @@
-using Application.Common.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Data.Interceptors;
 using Infrastructure.Services;
@@ -28,6 +27,14 @@ public static class DependencyInjection
             provider.GetRequiredService<ApplicationDbContext>());
 
         builder.Services.AddSingleton(TimeProvider.System);
+
+        builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+
+        builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+        builder.Services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
+
+        builder.Services.AddScoped<IRefreshTokenHasher, RefreshTokenHasher>();
 
         builder.Services.AddScoped<IShareCodeGenerator, ShareCodeGenerator>();
     }

@@ -7,3 +7,4 @@ global using MediatR;
 global using Domain.Entities;
 global using Domain.Enums;
 global using Application.Common.Interfaces;
+global using Application.Common.Exceptions;

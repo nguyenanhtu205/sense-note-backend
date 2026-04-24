@@ -21,8 +21,8 @@ public class ProblemDetailsExceptionHandler : IExceptionHandler
                 new ProblemDetails
                 {
                     Status = StatusCodes.Status400BadRequest,
-                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
                     Title = "Validation failed",
+                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
                     Detail = "One or more validation errors occurred.",
                     Extensions =
                     {
@@ -38,23 +38,33 @@ public class ProblemDetailsExceptionHandler : IExceptionHandler
                 new ProblemDetails
                 {
                     Status = StatusCodes.Status404NotFound,
-                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.5",
                     Title = "The specified resource was not found.",
+                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.5",
                     Detail = ne.Message
                 }),
-            UnauthorizedAccessException => (StatusCodes.Status401Unauthorized,
+            UnauthorizedAccessException ue => (StatusCodes.Status401Unauthorized,
                 new ProblemDetails
                 {
                     Status = StatusCodes.Status401Unauthorized,
                     Title = "Unauthorized",
-                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.2"
+                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.2",
+                    Detail = ue.Message
                 }),
-            ForbiddenAccessException => (StatusCodes.Status403Forbidden,
+            ConflictException ce => (StatusCodes.Status409Conflict,
+                new ProblemDetails
+                {
+                    Status = StatusCodes.Status409Conflict,
+                    Title = "Conflict",
+                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.10",
+                    Detail = ce.Message
+                }),
+            ForbiddenAccessException fe => (StatusCodes.Status403Forbidden,
                 new ProblemDetails
                 {
                     Status = StatusCodes.Status403Forbidden,
                     Title = "Forbidden",
-                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.4"
+                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.4",
+                    Detail = fe.Message
                 }),
             _ => (-1, null)
         };

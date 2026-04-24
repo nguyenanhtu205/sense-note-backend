@@ -1,6 +1,4 @@
-﻿using Application.Common.Interfaces;
-
-namespace Infrastructure.Services;
+﻿namespace Infrastructure.Services;
 
 public class ShareCodeGenerator : IShareCodeGenerator
 {
