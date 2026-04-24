@@ -1,6 +1,7 @@
 using Application.Common.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using NotFoundException = Application.Common.Exceptions.NotFoundException;
 
 namespace Web.Infrastructure;
 
@@ -42,13 +43,15 @@ public class ProblemDetailsExceptionHandler : IExceptionHandler
                     Type = "https://tools.ietf.org/html/rfc9110#section-15.5.5",
                     Detail = ne.Message
                 }),
-            UnauthorizedAccessException => (StatusCodes.Status401Unauthorized,
+            UnauthorizedAccessException ue => (StatusCodes.Status401Unauthorized,
                 new ProblemDetails
                 {
                     Status = StatusCodes.Status401Unauthorized,
                     Title = "Unauthorized",
                     Type = "https://tools.ietf.org/html/rfc9110#section-15.5.2",
-                    Detail = "Authentication is required to access this resource."
+                    Detail = string.IsNullOrWhiteSpace(ue.Message)
+                        ? "Authentication is required to access this resource."
+                        : ue.Message
                 }),
             ConflictException ce => (StatusCodes.Status409Conflict,
                 new ProblemDetails
@@ -58,13 +61,15 @@ public class ProblemDetailsExceptionHandler : IExceptionHandler
                     Type = "https://tools.ietf.org/html/rfc9110#section-15.5.10",
                     Detail = ce.Message
                 }),
-            ForbiddenAccessException => (StatusCodes.Status403Forbidden,
+            ForbiddenAccessException fe => (StatusCodes.Status403Forbidden,
                 new ProblemDetails
                 {
                     Status = StatusCodes.Status403Forbidden,
                     Title = "Forbidden",
                     Type = "https://tools.ietf.org/html/rfc9110#section-15.5.4",
-                    Detail = "You do not have permission to access this resource."
+                    Detail = string.IsNullOrWhiteSpace(fe.Message)
+                        ? "You do not have permission to access this resource."
+                        : fe.Message
                 }),
             _ => (-1, null)
         };

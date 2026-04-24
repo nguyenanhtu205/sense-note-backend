@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Web.Infrastructure;
@@ -12,20 +13,17 @@ public static class JwtExtensions
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.Authority = configuration["Api:Authority"];
-                options.Audience = configuration["Api:Audience"];
-
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
+                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidAudiences = configuration
-                        .GetSection("Api:ValidAudiences")
-                        .Get<string[]>(),
-                    ValidIssuers = configuration
-                        .GetSection("Api:ValidIssuers")
-                        .Get<string[]>()
+                    ClockSkew = TimeSpan.Zero,
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    ValidAudience = configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(configuration["Jwt:SigningKey"]!))
                 };
 
                 options.MapInboundClaims = false;

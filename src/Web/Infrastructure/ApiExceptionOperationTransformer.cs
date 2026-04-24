@@ -30,6 +30,12 @@ internal sealed class ApiExceptionOperationTransformer : IOpenApiOperationTransf
         operation.Responses.TryAdd("401", new OpenApiResponse { Description = "Unauthorized" });
         operation.Responses.TryAdd("403", new OpenApiResponse { Description = "Forbidden" });
 
+        operation.Security ??= [];
+        OpenApiSecurityRequirement securityRequirement = new();
+        OpenApiSecuritySchemeReference schemeReference = new("Bearer", context.Document);
+        securityRequirement.Add(schemeReference, []);
+        operation.Security.Add(securityRequirement);
+
         return Task.CompletedTask;
     }
 }

@@ -10,13 +10,12 @@ public class JwtProvider(IConfiguration configuration) : IJwtProvider
 {
     public string Generate(Teacher teacher)
     {
-        string? issuer = configuration["Api:Authority"];
-        string? audience = configuration["Api:Audience"];
-        string? key = configuration["Api:SigningKey"];
+        string? issuer = configuration["Jwt:Issuer"];
+        string? audience = configuration["Jwt:Audience"];
+        string? key = configuration["Jwt:SigningKey"];
 
         Claim[] claims =
         [
-            new(JwtRegisteredClaimNames.Sub, teacher.Id.ToString()),
             new(ClaimTypes.NameIdentifier, teacher.Id.ToString()),
             new(JwtRegisteredClaimNames.Email, teacher.Email),
             new("FullName", teacher.FullName)
@@ -29,7 +28,7 @@ public class JwtProvider(IConfiguration configuration) : IJwtProvider
             issuer,
             audience,
             claims,
-            expires: DateTime.UtcNow.AddHours(1),
+            expires: DateTime.UtcNow.AddMinutes(10),
             signingCredentials: credentials
         );
 
