@@ -5,7 +5,7 @@ public record LoginResponse(string AccessToken, string RefreshToken);
 public record LoginCommand(string Email, string Password)
     : IRequest<LoginResponse>;
 
-public class Login(
+public class LoginCommandHandler(
     IApplicationDbContext context,
     IJwtProvider jwtProvider,
     IPasswordHasher passwordHasher,

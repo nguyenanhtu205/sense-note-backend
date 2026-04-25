@@ -9,10 +9,10 @@ public class Auth : IEndpointGroup
 {
     public static void Map(RouteGroupBuilder groupBuilder)
     {
-        groupBuilder.MapPost(Register, "register");
-        groupBuilder.MapPost(Login, "login");
-        groupBuilder.MapPost(Logout, "logout").RequireAuthorization();
-        groupBuilder.MapPost(RefreshAccessToken, "refresh-token");
+        groupBuilder.MapPost(Register, "register").RequireRateLimiting("post");
+        groupBuilder.MapPost(Login, "login").RequireRateLimiting("post");
+        groupBuilder.MapPost(Logout, "logout").RequireAuthorization().RequireRateLimiting("post");
+        groupBuilder.MapPost(RefreshAccessToken, "refresh-token").RequireRateLimiting("post");
     }
 
     [EndpointSummary("Register")]
