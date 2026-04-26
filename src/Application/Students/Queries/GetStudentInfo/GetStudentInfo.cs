@@ -19,6 +19,7 @@ public class GetStudentInfoQueryHandler(IApplicationDbContext context, IMapper m
         }
 
         Lesson? latestLesson = await context.Lessons
+            .AsNoTracking()
             .Where(l => l.TeachingContextId == request.TeachingContextId)
             .OrderByDescending(l => l.Id)
             .FirstOrDefaultAsync(cancellationToken);
@@ -29,6 +30,7 @@ public class GetStudentInfoQueryHandler(IApplicationDbContext context, IMapper m
         }
 
         int finalScore = await context.LessonSummaries
+            .AsNoTracking()
             .Where(ls => ls.StudentId == request.StudentId && ls.LessonId == latestLesson.Id)
             .Select(ls => ls.FinalScore)
             .FirstOrDefaultAsync(cancellationToken) ?? 0;

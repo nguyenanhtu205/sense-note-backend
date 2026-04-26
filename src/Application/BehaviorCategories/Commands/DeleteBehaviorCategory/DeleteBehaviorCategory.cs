@@ -31,6 +31,12 @@ public class DeleteBehaviorCategoryCommandHandler(IApplicationDbContext context,
 
         behaviorCategory.DeletedAt = DateTimeOffset.UtcNow;
 
+        List<ContextBehaviorMap> maps = await context.ContextBehaviorMaps
+            .Where(x => x.BehaviorCategoryId == request.Id)
+            .ToListAsync(cancellationToken);
+
+        context.ContextBehaviorMaps.RemoveRange(maps);
+
         await context.SaveChangesAsync(cancellationToken);
     }
 }
