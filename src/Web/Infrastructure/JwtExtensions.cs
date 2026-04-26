@@ -27,6 +27,24 @@ public static class JwtExtensions
                 };
 
                 options.MapInboundClaims = false;
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse();
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "application/problem+json";
+                        var problemDetails = new
+                        {
+                            type = "https://tools.ietf.org/html/rfc9110#section-15.5.2",
+                            title = "Unauthorized",
+                            status = 401,
+                            detail = "Authentication is required to access this resource."
+                        };
+                        return context.Response.WriteAsJsonAsync(problemDetails);
+                    }
+                };
             });
 
         return services;
