@@ -35,6 +35,10 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
             .HasColumnName("deleted_at")
             .HasColumnType("timestamptz");
 
+        builder.Property(x => x.StudentSensitivityProfile)
+            .HasColumnName("student_sensitivity_profile")
+            .HasColumnType("jsonb");
+
         builder.HasOne(x => x.Class)
             .WithMany(c => c.Students)
             .HasForeignKey(x => x.ClassId)

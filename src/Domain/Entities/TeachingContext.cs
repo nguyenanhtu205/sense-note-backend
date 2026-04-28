@@ -1,5 +1,18 @@
 ﻿namespace Domain.Entities;
 
+public class EnvironmentalAsset
+{
+    public string AssetType { get; set; } = string.Empty;
+
+    public int X { get; set; }
+
+    public int Y { get; set; }
+
+    public double InfluenceRadius { get; set; }
+
+    public string ImpactType { get; set; } = string.Empty;
+}
+
 public class TeachingContext : BaseAuditableEntity
 {
     public int TeacherId { get; set; }
@@ -15,6 +28,8 @@ public class TeachingContext : BaseAuditableEntity
     public int SeatsPerTable { get; set; }
 
     public DateTimeOffset? DeletedAt { get; set; }
+
+    public List<EnvironmentalAsset> EnvironmentalAssets { get; set; } = [];
 
     public Teacher? Teacher { get; set; }
 

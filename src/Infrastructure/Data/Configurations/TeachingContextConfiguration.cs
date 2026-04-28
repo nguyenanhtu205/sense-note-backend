@@ -47,6 +47,10 @@ public class TeachingContextConfiguration : IEntityTypeConfiguration<TeachingCon
             .HasColumnName("deleted_at")
             .HasColumnType("timestamptz");
 
+        builder.Property(x => x.EnvironmentalAssets)
+            .HasColumnName("environmental_assets")
+            .HasColumnType("jsonb");
+
         builder.HasOne(x => x.Teacher)
             .WithMany(t => t.TeachingContexts)
             .HasForeignKey(x => x.TeacherId)

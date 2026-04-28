@@ -10,6 +10,14 @@ public class BehaviorCategory : BaseEntity
 
     public DateTimeOffset? DeletedAt { get; set; }
 
+    public bool IsAntecedent { get; set; }
+
+    public bool IsBehavior { get; set; }
+
+    public bool IsConsequence { get; set; }
+
+    public string? LabelGroup { get; set; }
+
     public Teacher? Teacher { get; set; }
 
     public ICollection<ContextBehaviorMap> ContextBehaviorMaps { get; private set; } = new List<ContextBehaviorMap>();

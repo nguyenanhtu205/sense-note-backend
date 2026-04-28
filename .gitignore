@@ -474,3 +474,6 @@ appsettings.Development.json
 
 # Ignore migrations
 **/Migrations/
+
+# Ignore ai-service
+**/ai-service/

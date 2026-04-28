@@ -1,5 +1,3 @@
-using Application.Common.Interfaces;
-
 namespace Infrastructure.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -28,6 +26,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<TeachingContext> TeachingContexts => Set<TeachingContext>();
 
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
+    public DbSet<InterventionLog> InterventionLogs => Set<InterventionLog>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

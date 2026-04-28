@@ -26,5 +26,7 @@ public interface IApplicationDbContext
 
     DbSet<RefreshToken> RefreshTokens { get; }
 
+    DbSet<InterventionLog> InterventionLogs { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -1,5 +1,34 @@
 ﻿namespace Domain.Entities;
 
+public class StudentSensitivityProfile
+{
+    public int SoundSensitivity { get; set; }
+
+    public int LightSensitivity { get; set; }
+
+    public int TemperatureSensitivity { get; set; }
+
+    public int TouchSensitivity { get; set; }
+
+    public List<string> SensitiveTimeSlots { get; set; } = [];
+
+    public List<string> SensitiveLocations { get; set; } = [];
+
+    public List<string> Triggers { get; set; } = [];
+
+    public Dictionary<string, int> TriggerSeverity { get; set; } = new();
+
+    public Dictionary<string, string> TriggerToBehaviorMap { get; set; } = new();
+
+    public List<string> PreferredInterventions { get; set; } = [];
+
+    public int OverallSensitivityLevel { get; set; }
+
+    public string? MedicalNotes { get; set; }
+
+    public DateTimeOffset LastUpdated { get; set; }
+}
+
 public class Student : BaseAuditableEntity
 {
     public int ClassId { get; set; }
@@ -9,6 +38,8 @@ public class Student : BaseAuditableEntity
     public DateTime? Birthday { get; set; }
 
     public DateTimeOffset? DeletedAt { get; set; }
+
+    public StudentSensitivityProfile StudentSensitivityProfile { get; set; } = new();
 
     public Class? Class { get; set; }
 
