@@ -28,14 +28,14 @@ public class CreateTeachingContextCommandValidator : AbstractValidator<CreateTea
                 .MaximumLength(50).WithMessage("Asset type can't exceed 50 characters");
 
             asset.RuleFor(x => x.ImpactType)
-                .NotEmpty().WithMessage("Impact type is required")
-                .MaximumLength(50).WithMessage("Impact type can't exceed 50 characters");
+                .NotNull().WithMessage("Impact type is required")
+                .IsInEnum().WithMessage("Impact type is invalid");
 
             asset.RuleFor(x => x.X)
-                .GreaterThanOrEqualTo(0).WithMessage("X must be >= 0");
+                .GreaterThanOrEqualTo(0).WithMessage("X must be greater than 0");
 
             asset.RuleFor(x => x.Y)
-                .GreaterThanOrEqualTo(0).WithMessage("Y must be >= 0");
+                .GreaterThanOrEqualTo(0).WithMessage("Y must be greater than 0");
 
             asset.RuleFor(x => x.InfluenceRadius)
                 .GreaterThan(0).WithMessage("Influence radius must be greater than 0");

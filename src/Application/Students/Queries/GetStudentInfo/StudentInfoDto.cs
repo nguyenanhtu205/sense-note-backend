@@ -6,6 +6,8 @@ public class StudentInfoDto
 
     public DateTime? Birthday { get; init; }
 
+    public List<StudentSensitivityProfile> StudentSensitivityProfiles { get; init; } = [];
+
     private class Mapping : Profile
     {
         public Mapping()

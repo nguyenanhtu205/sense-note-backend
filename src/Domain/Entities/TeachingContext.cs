@@ -10,7 +10,7 @@ public class EnvironmentalAsset
 
     public double InfluenceRadius { get; set; }
 
-    public required string ImpactType { get; set; }
+    public required ImpactType ImpactType { get; set; }
 }
 
 public class TeachingContext : BaseAuditableEntity

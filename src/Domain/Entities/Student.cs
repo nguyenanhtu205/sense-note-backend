@@ -10,6 +10,8 @@ public class StudentSensitivityProfile
 
     public int TouchSensitivity { get; set; }
 
+    public int Distractibility { get; set; }
+
     public List<string> SensitiveTimeSlots { get; set; } = [];
 
     public List<string> SensitiveLocations { get; set; } = [];
@@ -24,7 +26,7 @@ public class StudentSensitivityProfile
 
     public int OverallSensitivityLevel { get; set; }
 
-    public string? MedicalNotes { get; set; }
+    public required string MedicalNotes { get; set; }
 
     public DateTimeOffset LastUpdated { get; set; }
 }
@@ -39,7 +41,7 @@ public class Student : BaseAuditableEntity
 
     public DateTimeOffset? DeletedAt { get; set; }
 
-    public StudentSensitivityProfile StudentSensitivityProfile { get; set; } = new();
+    public List<StudentSensitivityProfile> StudentSensitivityProfiles { get; set; } = [];
 
     public Class? Class { get; set; }
 

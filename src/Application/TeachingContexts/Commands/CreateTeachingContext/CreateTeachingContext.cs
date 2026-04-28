@@ -1,6 +1,6 @@
 ﻿namespace Application.TeachingContexts.Commands.CreateTeachingContext;
 
-public record EnvironmentalAsset(string AssetType, int X, int Y, double InfluenceRadius, string ImpactType);
+public record EnvironmentalAsset(string AssetType, int X, int Y, double InfluenceRadius, ImpactType? ImpactType);
 
 public record CreateTeachingContextCommand(
     string ClassName,
@@ -40,7 +40,7 @@ public class CreateTeachingContextCommandHandler(IApplicationDbContext context, 
                 X = ea.X,
                 Y = ea.Y,
                 InfluenceRadius = ea.InfluenceRadius,
-                ImpactType = ea.ImpactType
+                ImpactType = ea.ImpactType!.Value
             }).ToList()
         };
 
