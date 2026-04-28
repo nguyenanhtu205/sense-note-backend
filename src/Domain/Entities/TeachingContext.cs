@@ -2,7 +2,7 @@
 
 public class EnvironmentalAsset
 {
-    public string AssetType { get; set; } = string.Empty;
+    public required string AssetType { get; set; }
 
     public int X { get; set; }
 
@@ -10,7 +10,7 @@ public class EnvironmentalAsset
 
     public double InfluenceRadius { get; set; }
 
-    public string ImpactType { get; set; } = string.Empty;
+    public required string ImpactType { get; set; }
 }
 
 public class TeachingContext : BaseAuditableEntity
@@ -52,7 +52,17 @@ public class TeachingContext : BaseAuditableEntity
             ContextName = contextName,
             NumCols = NumCols,
             NumRows = NumRows,
-            SeatsPerTable = SeatsPerTable
+            SeatsPerTable = SeatsPerTable,
+            EnvironmentalAssets = EnvironmentalAssets
+                .Select(x => new EnvironmentalAsset
+                {
+                    AssetType = x.AssetType,
+                    X = x.X,
+                    Y = x.Y,
+                    InfluenceRadius = x.InfluenceRadius,
+                    ImpactType = x.ImpactType
+                })
+                .ToList()
         };
     }
 }

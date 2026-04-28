@@ -26,7 +26,11 @@ public class TeachingContexts : IEndpointGroup
     }
 
     [EndpointSummary("Create teaching context")]
-    [EndpointDescription("Creates a new teaching context.")]
+    [EndpointDescription(
+        "Creates a new teaching context. EnvironmentalAsset fields: AssetType = type of asset generating impact " +
+        "(e.g. Speaker, Window, Projector), X = X coordinate on classroom grid (0-based), Y = Y coordinate on " +
+        "classroom grid (0-based), InfluenceRadius = radius of effect area, ImpactType = type of impact (e.g. Noise, " +
+        "Light, Distraction).")]
     public static async Task<IResult> CreateTeachingContext(
         CreateTeachingContextCommand command,
         ISender sender,

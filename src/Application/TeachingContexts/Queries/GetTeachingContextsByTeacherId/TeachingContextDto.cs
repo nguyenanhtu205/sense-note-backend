@@ -12,6 +12,8 @@ public class TeachingContextDto
 
     public int SeatsPerTable { get; init; }
 
+    public List<EnvironmentalAsset> EnvironmentalAssets { get; init; } = [];
+
     private class Mapping : Profile
     {
         public Mapping()
