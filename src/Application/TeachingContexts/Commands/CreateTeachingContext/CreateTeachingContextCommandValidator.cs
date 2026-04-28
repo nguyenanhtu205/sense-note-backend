@@ -20,6 +20,9 @@ public class CreateTeachingContextCommandValidator : AbstractValidator<CreateTea
 
         RuleFor(v => v.SeatsPerTable)
             .GreaterThan(0).WithMessage("Seats per table must be greater than 0");
+        
+        RuleFor(v => v.EnvironmentalAssets)
+            .NotNull().WithMessage("Environmental assets must not be null");
 
         RuleForEach(v => v.EnvironmentalAssets).ChildRules(asset =>
         {

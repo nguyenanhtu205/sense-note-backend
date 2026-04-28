@@ -6,8 +6,8 @@ public record StudentSensitivityProfile(
     int? TemperatureSensitivity,
     int? TouchSensitivity,
     int? Distractibility,
-    List<string> SensitiveTimeSlots,
-    List<string> SensitiveLocations,
+    List<string>? SensitiveTimeSlots,
+    List<string>? SensitiveLocations,
     int? OverallSensitivityLevel,
     string? MedicalNotes
 );
@@ -103,12 +103,14 @@ public class UpdateStudentCommandHandler(IApplicationDbContext context) : IReque
                 hasChange = true;
             }
 
-            if (!last.SensitiveTimeSlots.SequenceEqual(req.SensitiveTimeSlots))
+            if (req.SensitiveTimeSlots != null &&
+                !last.SensitiveTimeSlots.SequenceEqual(req.SensitiveTimeSlots))
             {
                 hasChange = true;
             }
 
-            if (!last.SensitiveLocations.SequenceEqual(req.SensitiveLocations))
+            if (req.SensitiveLocations != null &&
+                !last.SensitiveLocations.SequenceEqual(req.SensitiveLocations))
             {
                 hasChange = true;
             }
@@ -129,8 +131,8 @@ public class UpdateStudentCommandHandler(IApplicationDbContext context) : IReque
                 TouchSensitivity = req.TouchSensitivity ?? last?.TouchSensitivity ?? 0,
                 Distractibility = req.Distractibility ?? last?.Distractibility ?? 0,
                 OverallSensitivityLevel = req.OverallSensitivityLevel ?? last?.OverallSensitivityLevel ?? 0,
-                SensitiveTimeSlots = req.SensitiveTimeSlots,
-                SensitiveLocations = req.SensitiveLocations,
+                SensitiveTimeSlots = req.SensitiveTimeSlots ?? last?.SensitiveTimeSlots ?? [],
+                SensitiveLocations = req.SensitiveLocations ?? last?.SensitiveLocations ?? [],
                 MedicalNotes = req.MedicalNotes ?? last?.MedicalNotes ?? ""
             };
 

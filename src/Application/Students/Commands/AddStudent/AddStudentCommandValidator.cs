@@ -23,5 +23,8 @@ public class AddStudentCommandValidator : AbstractValidator<AddStudentCommand>
         RuleFor(x => x.BirthDay)
             .LessThan(DateTime.Today).When(x => x.BirthDay.HasValue)
             .WithMessage("Birthday must be in the past");
+        
+        RuleFor(x => x.StudentSensitivityProfile)
+            .NotNull().WithMessage("Student sensitivity profile must not be null");
     }
 }

@@ -21,5 +21,8 @@ public class UpdateStudentCommandValidator : AbstractValidator<UpdateStudentComm
         RuleFor(x => x.DisplayName)
             .NotEmpty().WithMessage("Display name is required")
             .MaximumLength(100).WithMessage("Display name must not exceed 100 characters");
+        
+        RuleFor(x => x.StudentSensitivityProfile)
+            .NotNull().WithMessage("Student sensitivity profile must not be null");
     }
 }

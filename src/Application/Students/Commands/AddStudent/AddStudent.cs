@@ -6,8 +6,8 @@ public record StudentSensitivityProfile(
     int? TemperatureSensitivity,
     int? TouchSensitivity,
     int? Distractibility,
-    List<string> SensitiveTimeSlots,
-    List<string> SensitiveLocations,
+    List<string>? SensitiveTimeSlots,
+    List<string>? SensitiveLocations,
     int? OverallSensitivityLevel,
     string? MedicalNotes
 );
@@ -40,8 +40,8 @@ public class AddStudentCommandHandler(IApplicationDbContext context)
                     TemperatureSensitivity = request.StudentSensitivityProfile.TemperatureSensitivity ?? 0,
                     TouchSensitivity = request.StudentSensitivityProfile.TouchSensitivity ?? 0,
                     Distractibility = request.StudentSensitivityProfile.Distractibility ?? 0,
-                    SensitiveTimeSlots = request.StudentSensitivityProfile.SensitiveTimeSlots,
-                    SensitiveLocations = request.StudentSensitivityProfile.SensitiveLocations,
+                    SensitiveTimeSlots = request.StudentSensitivityProfile.SensitiveTimeSlots ?? [],
+                    SensitiveLocations = request.StudentSensitivityProfile.SensitiveLocations ?? [],
                     OverallSensitivityLevel = request.StudentSensitivityProfile.OverallSensitivityLevel ?? 0,
                     MedicalNotes = request.StudentSensitivityProfile.MedicalNotes ?? "",
                     LastUpdated = DateTimeOffset.UtcNow
