@@ -37,7 +37,6 @@ public class Students : IEndpointGroup
                          - TouchSensitivity: Sensitivity to physical contact or proximity.
                          - Distractibility: Tendency to be distracted by surroundings (higher value = more distractible).
                          - SensitiveTimeSlots: Time ranges when the student is more sensitive (e.g. '08:00-09:00').
-                         - SensitiveLocations: Locations or positions that may cause discomfort (e.g. 'near window', 'back row').
                          - OverallSensitivityLevel: Overall sensitivity level (optional aggregated score).
                          - MedicalNotes: Free-text notes from teacher; can be used to infer other sensitivity fields.
                          - If the sensitivity fields are not provided, the system will automatically infer

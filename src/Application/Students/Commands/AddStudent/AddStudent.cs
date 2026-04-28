@@ -7,7 +7,6 @@ public record StudentSensitivityProfile(
     int? TouchSensitivity,
     int? Distractibility,
     List<string>? SensitiveTimeSlots,
-    List<string>? SensitiveLocations,
     int? OverallSensitivityLevel,
     string? MedicalNotes
 );
@@ -26,6 +25,14 @@ public class AddStudentCommandHandler(IApplicationDbContext context)
 {
     public async Task<int> Handle(AddStudentCommand request, CancellationToken cancellationToken)
     {
+        TeachingContext? teachingContext = await context.TeachingContexts
+            .FirstOrDefaultAsync(tc => tc.Id == request.TeachingContextId, cancellationToken);
+
+        if (teachingContext == null)
+        {
+            throw new NotFoundException($"Teaching context with id {request.TeachingContextId} was not found.");
+        }
+
         Student newStudent = new()
         {
             ClassId = request.ClassId,
@@ -41,7 +48,14 @@ public class AddStudentCommandHandler(IApplicationDbContext context)
                     TouchSensitivity = request.StudentSensitivityProfile.TouchSensitivity ?? 0,
                     Distractibility = request.StudentSensitivityProfile.Distractibility ?? 0,
                     SensitiveTimeSlots = request.StudentSensitivityProfile.SensitiveTimeSlots ?? [],
-                    SensitiveLocations = request.StudentSensitivityProfile.SensitiveLocations ?? [],
+                    SensitiveLocations = Student.CalculateSensitiveLocations(
+                        request.StudentSensitivityProfile.SoundSensitivity ?? 0,
+                        request.StudentSensitivityProfile.LightSensitivity ?? 0,
+                        request.StudentSensitivityProfile.TemperatureSensitivity ?? 0,
+                        request.StudentSensitivityProfile.TouchSensitivity ?? 0,
+                        request.StudentSensitivityProfile.Distractibility ?? 0,
+                        teachingContext.NumCols, teachingContext.NumRows, teachingContext.SeatsPerTable,
+                        teachingContext.EnvironmentalAssets),
                     OverallSensitivityLevel = request.StudentSensitivityProfile.OverallSensitivityLevel ?? 0,
                     MedicalNotes = request.StudentSensitivityProfile.MedicalNotes ?? "",
                     LastUpdated = DateTimeOffset.UtcNow

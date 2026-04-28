@@ -7,7 +7,6 @@ public record StudentSensitivityProfile(
     int? TouchSensitivity,
     int? Distractibility,
     List<string>? SensitiveTimeSlots,
-    List<string>? SensitiveLocations,
     int? OverallSensitivityLevel,
     string? MedicalNotes
 );
@@ -30,6 +29,14 @@ public class UpdateStudentCommandHandler(IApplicationDbContext context) : IReque
         if (student == null)
         {
             throw new NotFoundException($"Student with id {request.StudentId} was not found.");
+        }
+
+        TeachingContext? teachingContext = await context.TeachingContexts
+            .FirstOrDefaultAsync(tc => tc.Id == request.TeachingContextId, cancellationToken);
+
+        if (teachingContext == null)
+        {
+            throw new NotFoundException($"Teaching context with id {request.TeachingContextId} was not found.");
         }
 
         SeatAssignment? seatAssignment = await context.SeatAssignments
@@ -109,12 +116,6 @@ public class UpdateStudentCommandHandler(IApplicationDbContext context) : IReque
                 hasChange = true;
             }
 
-            if (req.SensitiveLocations != null &&
-                !last.SensitiveLocations.SequenceEqual(req.SensitiveLocations))
-            {
-                hasChange = true;
-            }
-
             if (req.MedicalNotes != null && last.MedicalNotes != req.MedicalNotes)
             {
                 hasChange = true;
@@ -132,7 +133,14 @@ public class UpdateStudentCommandHandler(IApplicationDbContext context) : IReque
                 Distractibility = req.Distractibility ?? last?.Distractibility ?? 0,
                 OverallSensitivityLevel = req.OverallSensitivityLevel ?? last?.OverallSensitivityLevel ?? 0,
                 SensitiveTimeSlots = req.SensitiveTimeSlots ?? last?.SensitiveTimeSlots ?? [],
-                SensitiveLocations = req.SensitiveLocations ?? last?.SensitiveLocations ?? [],
+                SensitiveLocations = Student.CalculateSensitiveLocations(
+                    request.StudentSensitivityProfile.SoundSensitivity ?? 0,
+                    request.StudentSensitivityProfile.LightSensitivity ?? 0,
+                    request.StudentSensitivityProfile.TemperatureSensitivity ?? 0,
+                    request.StudentSensitivityProfile.TouchSensitivity ?? 0,
+                    request.StudentSensitivityProfile.Distractibility ?? 0,
+                    teachingContext.NumCols, teachingContext.NumRows, teachingContext.SeatsPerTable,
+                    teachingContext.EnvironmentalAssets),
                 MedicalNotes = req.MedicalNotes ?? last?.MedicalNotes ?? ""
             };
 
