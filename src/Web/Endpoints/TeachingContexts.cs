@@ -37,11 +37,11 @@ public class TeachingContexts : IEndpointGroup
                          - ImpactType: type of impact.
 
                          ImpactType must be one of the following values only:
-                         - Sound
-                         - Light
-                         - Distraction
-                         - Temperature
-                         - Touch
+                         - Sound (0)
+                         - Light (1)
+                         - Distraction (2)
+                         - Temperature (3)
+                         - Touch (4)
                          """)]
     public static async Task<IResult> CreateTeachingContext(
         CreateTeachingContextCommand command,

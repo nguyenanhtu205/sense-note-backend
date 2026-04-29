@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Npgsql;
 
 namespace Infrastructure;
 
@@ -17,10 +18,15 @@ public static class DependencyInjection
 
         builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
 
+        NpgsqlDataSourceBuilder dataSourceBuilder = new(connectionString);
+        dataSourceBuilder.EnableDynamicJson();
+
+        NpgsqlDataSource dataSource = dataSourceBuilder.Build();
+
         builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-            options.UseNpgsql(connectionString);
+            options.UseNpgsql(dataSource);
         });
 
         builder.Services.AddScoped<IApplicationDbContext>(provider =>

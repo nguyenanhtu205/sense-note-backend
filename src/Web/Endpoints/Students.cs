@@ -42,12 +42,13 @@ public class Students : IEndpointGroup
                          - If the sensitivity fields are not provided, the system will automatically infer
                          SoundSensitivity, LightSensitivity, TemperatureSensitivity, TouchSensitivity,
                          and Distractibility based on the content of MedicalNotes.
+                         - Response include student id and list of sensitive locations of this student.
                          """)]
     public static async Task<IResult> AddStudent(AddStudentCommand command, ISender sender,
         CancellationToken cancellationToken)
     {
-        int newStudentId = await sender.Send(command, cancellationToken);
-        return Results.Ok(newStudentId);
+        AddStudentResponse result = await sender.Send(command, cancellationToken);
+        return Results.Ok(result);
     }
 
     [EndpointSummary("Get student info")]
@@ -83,7 +84,7 @@ public class Students : IEndpointGroup
     public static async Task<IResult> UpdateStudent(UpdateStudentCommand command, ISender sender,
         CancellationToken cancellationToken)
     {
-        await sender.Send(command, cancellationToken);
-        return Results.NoContent();
+        List<string> result = await sender.Send(command, cancellationToken);
+        return Results.Ok(result);
     }
 }

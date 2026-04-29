@@ -17,11 +17,12 @@ public record UpdateStudentCommand(
     string FullName,
     DateTime? BirthDay,
     string DisplayName,
-    StudentSensitivityProfile StudentSensitivityProfile) : IRequest;
+    StudentSensitivityProfile StudentSensitivityProfile) : IRequest<List<string>>;
 
-public class UpdateStudentCommandHandler(IApplicationDbContext context) : IRequestHandler<UpdateStudentCommand>
+public class UpdateStudentCommandHandler(IApplicationDbContext context)
+    : IRequestHandler<UpdateStudentCommand, List<string>>
 {
-    public async Task Handle(UpdateStudentCommand request, CancellationToken cancellationToken)
+    public async Task<List<string>> Handle(UpdateStudentCommand request, CancellationToken cancellationToken)
     {
         Student? student = await context.Students
             .FirstOrDefaultAsync(s => s.Id == request.StudentId, cancellationToken);
@@ -76,7 +77,6 @@ public class UpdateStudentCommandHandler(IApplicationDbContext context) : IReque
         {
             hasChange = true;
         }
-
         else
         {
             if (req.SoundSensitivity.HasValue && last.SoundSensitivity != req.SoundSensitivity.Value)
@@ -122,6 +122,17 @@ public class UpdateStudentCommandHandler(IApplicationDbContext context) : IReque
             }
         }
 
+        List<string> sensitiveLocations = hasChange
+            ? Student.CalculateSensitiveLocations(
+                request.StudentSensitivityProfile.SoundSensitivity ?? last?.SoundSensitivity ?? 0,
+                request.StudentSensitivityProfile.LightSensitivity ?? last?.LightSensitivity ?? 0,
+                request.StudentSensitivityProfile.TemperatureSensitivity ?? last?.TemperatureSensitivity ?? 0,
+                request.StudentSensitivityProfile.TouchSensitivity ?? last?.TouchSensitivity ?? 0,
+                request.StudentSensitivityProfile.Distractibility ?? last?.Distractibility ?? 0,
+                teachingContext.NumCols, teachingContext.NumRows, teachingContext.SeatsPerTable,
+                teachingContext.EnvironmentalAssets)
+            : last?.SensitiveLocations ?? [];
+
         if (hasChange)
         {
             Domain.Entities.StudentSensitivityProfile newProfile = new()
@@ -133,14 +144,7 @@ public class UpdateStudentCommandHandler(IApplicationDbContext context) : IReque
                 Distractibility = req.Distractibility ?? last?.Distractibility ?? 0,
                 OverallSensitivityLevel = req.OverallSensitivityLevel ?? last?.OverallSensitivityLevel ?? 0,
                 SensitiveTimeSlots = req.SensitiveTimeSlots ?? last?.SensitiveTimeSlots ?? [],
-                SensitiveLocations = Student.CalculateSensitiveLocations(
-                    request.StudentSensitivityProfile.SoundSensitivity ?? 0,
-                    request.StudentSensitivityProfile.LightSensitivity ?? 0,
-                    request.StudentSensitivityProfile.TemperatureSensitivity ?? 0,
-                    request.StudentSensitivityProfile.TouchSensitivity ?? 0,
-                    request.StudentSensitivityProfile.Distractibility ?? 0,
-                    teachingContext.NumCols, teachingContext.NumRows, teachingContext.SeatsPerTable,
-                    teachingContext.EnvironmentalAssets),
+                SensitiveLocations = sensitiveLocations,
                 MedicalNotes = req.MedicalNotes ?? last?.MedicalNotes ?? ""
             };
 
@@ -150,5 +154,7 @@ public class UpdateStudentCommandHandler(IApplicationDbContext context) : IReque
         }
 
         await context.SaveChangesAsync(cancellationToken);
+
+        return sensitiveLocations;
     }
 }

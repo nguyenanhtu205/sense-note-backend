@@ -28,7 +28,7 @@ public class JwtProvider(IConfiguration configuration) : IJwtProvider
             issuer,
             audience,
             claims,
-            expires: DateTime.UtcNow.AddMinutes(10),
+            expires: DateTime.UtcNow.AddMinutes(120),
             signingCredentials: credentials
         );
 

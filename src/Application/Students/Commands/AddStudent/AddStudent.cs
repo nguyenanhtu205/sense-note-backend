@@ -1,5 +1,7 @@
 ﻿namespace Application.Students.Commands.AddStudent;
 
+public record AddStudentResponse(int StudentId, List<string> SensitiveLocations);
+
 public record StudentSensitivityProfile(
     int? SoundSensitivity,
     int? LightSensitivity,
@@ -18,12 +20,12 @@ public record AddStudentCommand(
     int TeachingContextId,
     string DisplayName,
     int OrdinalIndex,
-    StudentSensitivityProfile StudentSensitivityProfile) : IRequest<int>;
+    StudentSensitivityProfile StudentSensitivityProfile) : IRequest<AddStudentResponse>;
 
 public class AddStudentCommandHandler(IApplicationDbContext context)
-    : IRequestHandler<AddStudentCommand, int>
+    : IRequestHandler<AddStudentCommand, AddStudentResponse>
 {
-    public async Task<int> Handle(AddStudentCommand request, CancellationToken cancellationToken)
+    public async Task<AddStudentResponse> Handle(AddStudentCommand request, CancellationToken cancellationToken)
     {
         TeachingContext? teachingContext = await context.TeachingContexts
             .FirstOrDefaultAsync(tc => tc.Id == request.TeachingContextId, cancellationToken);
@@ -32,6 +34,15 @@ public class AddStudentCommandHandler(IApplicationDbContext context)
         {
             throw new NotFoundException($"Teaching context with id {request.TeachingContextId} was not found.");
         }
+
+        List<string> sensitiveLocations = Student.CalculateSensitiveLocations(
+            request.StudentSensitivityProfile.SoundSensitivity ?? 0,
+            request.StudentSensitivityProfile.LightSensitivity ?? 0,
+            request.StudentSensitivityProfile.TemperatureSensitivity ?? 0,
+            request.StudentSensitivityProfile.TouchSensitivity ?? 0,
+            request.StudentSensitivityProfile.Distractibility ?? 0,
+            teachingContext.NumCols, teachingContext.NumRows, teachingContext.SeatsPerTable,
+            teachingContext.EnvironmentalAssets);
 
         Student newStudent = new()
         {
@@ -48,14 +59,7 @@ public class AddStudentCommandHandler(IApplicationDbContext context)
                     TouchSensitivity = request.StudentSensitivityProfile.TouchSensitivity ?? 0,
                     Distractibility = request.StudentSensitivityProfile.Distractibility ?? 0,
                     SensitiveTimeSlots = request.StudentSensitivityProfile.SensitiveTimeSlots ?? [],
-                    SensitiveLocations = Student.CalculateSensitiveLocations(
-                        request.StudentSensitivityProfile.SoundSensitivity ?? 0,
-                        request.StudentSensitivityProfile.LightSensitivity ?? 0,
-                        request.StudentSensitivityProfile.TemperatureSensitivity ?? 0,
-                        request.StudentSensitivityProfile.TouchSensitivity ?? 0,
-                        request.StudentSensitivityProfile.Distractibility ?? 0,
-                        teachingContext.NumCols, teachingContext.NumRows, teachingContext.SeatsPerTable,
-                        teachingContext.EnvironmentalAssets),
+                    SensitiveLocations = sensitiveLocations,
                     OverallSensitivityLevel = request.StudentSensitivityProfile.OverallSensitivityLevel ?? 0,
                     MedicalNotes = request.StudentSensitivityProfile.MedicalNotes ?? "",
                     LastUpdated = DateTimeOffset.UtcNow
@@ -79,6 +83,6 @@ public class AddStudentCommandHandler(IApplicationDbContext context)
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return newStudent.Id;
+        return new AddStudentResponse(newStudent.Id, sensitiveLocations);
     }
 }
