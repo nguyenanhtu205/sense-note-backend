@@ -1,0 +1,57 @@
+﻿services:
+  db:
+    image: postgres:16
+    container_name: sense-note-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    restart: always
+
+  ai-service:
+    build:
+      context: ./src/AiService
+      dockerfile: Dockerfile
+    container_name: ai-service
+    ports:
+      - "8000:8000"
+    environment:
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION}
+      - OLLAMA_URL=http://ollama:11434
+    depends_on:
+      - db
+      - ollama
+    restart: always
+
+  web-api:
+    build:
+      context: .
+      dockerfile: src/Web/Dockerfile
+    container_name: web-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION}
+      - AI_SERVICE_URL=http://ai-service:8000
+    depends_on:
+      - db
+      - ai-service
+    restart: always
+
+volumes:
+  pgdata:
+  ollama:

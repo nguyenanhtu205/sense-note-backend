@@ -1,0 +1,11 @@
+﻿**/bin
+**/obj
+**/node_modules
+.vs
+.vscode
+.git
+*.log
+.env
+README.md
+Dockerfile
+docker-compose.yml

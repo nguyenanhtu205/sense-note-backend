@@ -472,8 +472,5 @@ $RECYCLE.BIN/
 # Ignore development settings
 appsettings.Development.json
 
-# Ignore migrations
-**/Migrations/
-
 # Ignore ai-service
-**/ai-service/
+**/AiService/
