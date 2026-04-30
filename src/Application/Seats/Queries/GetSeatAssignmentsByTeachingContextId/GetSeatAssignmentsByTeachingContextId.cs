@@ -21,14 +21,36 @@ public class GetSeatAssignmentsByTeachingContextIdQueryHandler(
             throw new ForbiddenAccessException();
         }
 
-        return new SeatAssignmentsVm
+        List<SeatAssignment> seatAssignments = await context.SeatAssignments
+            .AsNoTracking()
+            .Where(sa => sa.TeachingContextId == request.TeachingContextId)
+            .OrderBy(sa => sa.OrdinalIndex)
+            .ToListAsync(cancellationToken);
+
+        List<int> studentIds = seatAssignments.Select(sa => sa.StudentId).ToList();
+
+        var sensitiveLocationsByStudentId = await context.Students
+            .Where(s => studentIds.Contains(s.Id))
+            .Select(s => new
+            {
+                s.Id,
+                Locations = s.StudentSensitivityProfiles
+                    .SelectMany(p => p.SensitiveLocations)
+                    .ToList()
+            })
+            .ToListAsync(cancellationToken);
+
+        Dictionary<int, List<string>> locationDict = sensitiveLocationsByStudentId
+            .ToDictionary(x => x.Id, x => x.Locations);
+
+        List<SeatAssignmentDto> seatAssignmentsDto = seatAssignments.Select(sa => new SeatAssignmentDto
         {
-            SeatAssignments = await context.SeatAssignments
-                .AsNoTracking()
-                .Where(sa => sa.TeachingContextId == request.TeachingContextId)
-                .OrderBy(sa => sa.OrdinalIndex)
-                .ProjectTo<SeatAssignmentDto>(mapper.ConfigurationProvider)
-                .ToListAsync(cancellationToken)
-        };
+            StudentId = sa.StudentId,
+            DisplayName = sa.DisplayName,
+            OrdinalIndex = sa.OrdinalIndex,
+            SensitiveLocations = locationDict[sa.StudentId]
+        }).ToList();
+
+        return new SeatAssignmentsVm { SeatAssignments = seatAssignmentsDto };
     }
 }

@@ -8,11 +8,5 @@ public class SeatAssignmentDto
 
     public int OrdinalIndex { get; init; }
 
-    private class Mapping : Profile
-    {
-        public Mapping()
-        {
-            CreateMap<SeatAssignment, SeatAssignmentDto>();
-        }
-    }
+    public List<string> SensitiveLocations { get; init; } = [];
 }
