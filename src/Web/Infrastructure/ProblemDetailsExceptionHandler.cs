@@ -67,9 +67,15 @@ public class ProblemDetailsExceptionHandler : IExceptionHandler
                     Status = StatusCodes.Status403Forbidden,
                     Title = "Forbidden",
                     Type = "https://tools.ietf.org/html/rfc9110#section-15.5.4",
-                    Detail = string.IsNullOrWhiteSpace(fe.Message)
-                        ? "You do not have permission to access this resource."
-                        : fe.Message
+                    Detail = fe.Message
+                }),
+            AiServiceException ae => (StatusCodes.Status502BadGateway,
+                new ProblemDetails
+                {
+                    Status = StatusCodes.Status502BadGateway,
+                    Title = "AI Service Error",
+                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.3",
+                    Detail = ae.Message
                 }),
             _ => (-1, null)
         };

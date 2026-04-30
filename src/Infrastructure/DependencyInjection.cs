@@ -1,6 +1,7 @@
 using Infrastructure.Data;
 using Infrastructure.Data.Interceptors;
 using Infrastructure.Services;
+using Infrastructure.Services.Http.Ai;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,5 +44,13 @@ public static class DependencyInjection
         builder.Services.AddScoped<IRefreshTokenHasher, RefreshTokenHasher>();
 
         builder.Services.AddScoped<IShareCodeGenerator, ShareCodeGenerator>();
+
+        string? aiServiceUrl = builder.Configuration.GetValue<string>("AI_SERVICE_URL");
+        Guard.Against.Null(aiServiceUrl, message: "AI_SERVICE_URL not found.");
+
+        builder.Services.AddHttpClient<IExtractScores, ExtractScores>(client =>
+        {
+            client.BaseAddress = new Uri(aiServiceUrl);
+        });
     }
 }
