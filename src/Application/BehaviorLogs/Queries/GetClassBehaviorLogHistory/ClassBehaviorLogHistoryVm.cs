@@ -4,7 +4,12 @@ public record ClassBehaviorLogHistoryItemVm(
     string DisplayName,
     string BehaviorCategoryName,
     int PointValue,
-    DateTimeOffset OccurredAt);
+    DateTimeOffset OccurredAt,
+    string Antecedent,
+    string BehaviorDescription,
+    string Consequence,
+    int SeverityLevel
+);
 
 public class ClassBehaviorLogHistoryVm
 {

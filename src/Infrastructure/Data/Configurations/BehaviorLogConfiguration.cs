@@ -47,17 +47,9 @@ public class BehaviorLogConfiguration : IEntityTypeConfiguration<BehaviorLog>
             .HasColumnName("consequence")
             .HasMaxLength(500);
 
-        builder.Property(x => x.RawTranscription)
-            .HasColumnName("raw_transcription")
-            .HasMaxLength(500);
-
         builder.Property(x => x.SeverityLevel)
             .HasColumnName("severity_level")
             .IsRequired();
-
-        builder.Property(x => x.AiTags)
-            .HasColumnName("ai_tags")
-            .HasColumnType("jsonb");
 
         builder.HasOne(x => x.Lesson)
             .WithMany(l => l.BehaviorLogs)

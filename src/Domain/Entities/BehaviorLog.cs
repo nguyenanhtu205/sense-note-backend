@@ -10,17 +10,13 @@ public class BehaviorLog : BaseAuditableEntity
 
     public DateTimeOffset OccurredAt { get; set; }
 
-    public string? Antecedent { get; set; }
+    public required string Antecedent { get; set; }
 
-    public string? BehaviorDescription { get; set; }
+    public required string BehaviorDescription { get; set; }
 
-    public string? Consequence { get; set; }
+    public required string Consequence { get; set; }
 
-    public string? RawTranscription { get; set; }
-
-    public int SeverityLevel { get; set; } = 1;
-
-    public List<string> AiTags { get; set; } = [];
+    public int SeverityLevel { get; set; }
 
     public Lesson? Lesson { get; set; }
 

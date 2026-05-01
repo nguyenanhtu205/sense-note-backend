@@ -4,7 +4,6 @@ public record GetSeatAssignmentsByTeachingContextIdQuery(int TeachingContextId) 
 
 public class GetSeatAssignmentsByTeachingContextIdQueryHandler(
     IApplicationDbContext context,
-    IMapper mapper,
     ICurrentTeacher currentTeacher)
     : IRequestHandler<GetSeatAssignmentsByTeachingContextIdQuery, SeatAssignmentsVm>
 {

@@ -2,7 +2,14 @@ using ValidationException = Application.Common.Exceptions.ValidationException;
 
 namespace Application.BehaviorLogs.Commands.LogBehavior;
 
-public record LogBehaviorCommand(int LessonId, int StudentId, int BehaviorCategoryId) : IRequest<int>;
+public record LogBehaviorCommand(
+    int LessonId,
+    int StudentId,
+    int BehaviorCategoryId,
+    string Antecedent,
+    string BehaviorDescription,
+    string Consequence,
+    int SeverityLevel) : IRequest<int>;
 
 public class LogBehaviorCommandCommandHandler(IApplicationDbContext context, ICurrentTeacher currentTeacher)
     : IRequestHandler<LogBehaviorCommand, int>
@@ -51,7 +58,11 @@ public class LogBehaviorCommandCommandHandler(IApplicationDbContext context, ICu
             LessonId = request.LessonId,
             StudentId = request.StudentId,
             BehaviorCategoryId = request.BehaviorCategoryId,
-            OccurredAt = DateTimeOffset.UtcNow
+            OccurredAt = DateTimeOffset.UtcNow,
+            Antecedent = request.Antecedent,
+            BehaviorDescription = request.BehaviorDescription,
+            Consequence = request.Consequence,
+            SeverityLevel = request.SeverityLevel
         };
 
         context.BehaviorLogs.Add(log);

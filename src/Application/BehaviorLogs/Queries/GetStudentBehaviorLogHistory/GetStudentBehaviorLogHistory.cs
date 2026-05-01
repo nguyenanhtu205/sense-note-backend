@@ -37,8 +37,15 @@ public class GetStudentBehaviorLogHistoryQueryHandler(IApplicationDbContext cont
         return new StudentBehaviorLogHistoryVm
         {
             Logs = logs.Select(x =>
-                new StudentBehaviorLogHistoryItemVm(x.BehaviorCategory!.Name, x.BehaviorCategory.PointValue,
-                    x.OccurredAt)).ToList()
+                new StudentBehaviorLogHistoryItemVm(
+                    x.BehaviorCategory!.Name,
+                    x.BehaviorCategory.PointValue,
+                    x.OccurredAt,
+                    x.Antecedent,
+                    x.BehaviorDescription,
+                    x.Consequence,
+                    x.SeverityLevel
+                )).ToList()
         };
     }
 }

@@ -29,22 +29,6 @@ public class BehaviorCategoryConfiguration : IEntityTypeConfiguration<BehaviorCa
             .HasColumnName("deleted_at")
             .HasColumnType("timestamptz");
 
-        builder.Property(x => x.IsAntecedent)
-            .HasColumnName("is_antecedent")
-            .HasDefaultValue(false);
-
-        builder.Property(x => x.IsBehavior)
-            .HasColumnName("is_behavior")
-            .HasDefaultValue(true);
-
-        builder.Property(x => x.IsConsequence)
-            .HasColumnName("is_consequence")
-            .HasDefaultValue(false);
-
-        builder.Property(x => x.LabelGroup)
-            .HasColumnName("label_group")
-            .HasMaxLength(100);
-
         builder.HasOne(x => x.Teacher)
             .WithMany(t => t.BehaviorCategories)
             .HasForeignKey(x => x.TeacherId)

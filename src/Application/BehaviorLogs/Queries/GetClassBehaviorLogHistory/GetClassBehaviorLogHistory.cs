@@ -43,7 +43,11 @@ public class GetClassBehaviorLogHistoryQueryHandler(IApplicationDbContext contex
                 studentDisplayNames.GetValueOrDefault(log.StudentId) ?? "Unknown",
                 log.BehaviorCategory?.Name ?? "Unknown",
                 log.BehaviorCategory?.PointValue ?? 0,
-                log.OccurredAt
+                log.OccurredAt,
+                log.Antecedent,
+                log.BehaviorDescription,
+                log.Consequence,
+                log.SeverityLevel
             )).ToList()
         };
     }
