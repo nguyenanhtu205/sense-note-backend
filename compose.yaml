@@ -47,6 +47,9 @@
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=${DB_CONNECTION}
       - AI_SERVICE_URL=http://ai-service:8000
+      - Jwt__Issuer=${ISSUER}
+      - Jwt__Audience=${AUDIENCE}
+      - Jwt__SigningKey=${SIGNING_KEY}
     depends_on:
       - db
       - ai-service
