@@ -48,3 +48,6 @@ class OllamaService:
             json_body=payload,
             stream=stream
         )
+
+def get_ollama_service() -> OllamaService:
+    return OllamaService()

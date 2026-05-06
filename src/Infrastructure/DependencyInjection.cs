@@ -52,5 +52,15 @@ public static class DependencyInjection
         {
             client.BaseAddress = new Uri(aiServiceUrl);
         });
+
+        builder.Services.AddHttpClient<IGetSuggestedIntervention, GetSuggestedIntervention>(client =>
+        {
+            client.BaseAddress = new Uri(aiServiceUrl);
+        });
+
+        builder.Services.AddHttpClient<IAnalyzeAbcTrends, AnalyzeAbcTrends>(client =>
+        {
+            client.BaseAddress = new Uri(aiServiceUrl);
+        });
     }
 }

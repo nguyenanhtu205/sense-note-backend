@@ -25,7 +25,7 @@ public class ExtractScoresCommandHandler(IExtractScores extractScores)
 
         cleanedNote = RegexHelpers.ControlChars().Replace(cleanedNote, "");
 
-        MedicalSensitivityScoresResponse? result = await extractScores.ExtractAsync(cleanedNote);
+        MedicalSensitivityScoresResponse? result = await extractScores.ExtractAsync(cleanedNote, cancellationToken);
 
         return result ?? throw new AiServiceException();
     }

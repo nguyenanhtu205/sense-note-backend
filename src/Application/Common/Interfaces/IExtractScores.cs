@@ -11,5 +11,5 @@ public record MedicalSensitivityScoresResponse
 
 public interface IExtractScores
 {
-    Task<MedicalSensitivityScoresResponse?> ExtractAsync(string medicalNote);
+    Task<MedicalSensitivityScoresResponse?> ExtractAsync(string medicalNote, CancellationToken cancellationToken);
 }
