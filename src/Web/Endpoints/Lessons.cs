@@ -4,15 +4,19 @@ using Application.Lessons.Queries.GetLessonByTeachingContextId;
 
 namespace Web.Endpoints;
 
+public record StartLessonResponse(int LessonId);
+
 public class Lessons : IEndpointGroup
 {
     public static void Map(RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapGet(GetLessonByTeachingContextId, "{teachingContextId:int}")
+            .Produces<LessonVm>()
             .RequireAuthorization()
             .RequireRateLimiting("get");
 
         groupBuilder.MapPost(StartLesson)
+            .Produces<StartLessonResponse>()
             .RequireAuthorization()
             .RequireRateLimiting("post");
 
@@ -37,7 +41,7 @@ public class Lessons : IEndpointGroup
         CancellationToken cancellationToken)
     {
         int lessonId = await sender.Send(command, cancellationToken);
-        return Results.Ok(lessonId);
+        return Results.Ok(new StartLessonResponse(lessonId));
     }
 
     [EndpointSummary("End lesson")]

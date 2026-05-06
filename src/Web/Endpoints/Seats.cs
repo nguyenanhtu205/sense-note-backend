@@ -8,6 +8,7 @@ public class Seats : IEndpointGroup
     public static void Map(RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapGet(GetSeatAssignmentsByTeachingContextId, "{teachingContextId:int}")
+            .Produces<SeatAssignmentsVm>()
             .RequireAuthorization()
             .RequireRateLimiting("get");
 
@@ -24,7 +25,6 @@ public class Seats : IEndpointGroup
         SeatAssignmentsVm vm = await sender.Send(
             new GetSeatAssignmentsByTeachingContextIdQuery(teachingContextId),
             cancellationToken);
-
         return Results.Ok(vm);
     }
 

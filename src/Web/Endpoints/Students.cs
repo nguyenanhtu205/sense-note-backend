@@ -5,15 +5,19 @@ using Application.Students.Queries.GetStudentInfo;
 
 namespace Web.Endpoints;
 
+public record UpdateStudentResponse(List<string> SensitiveLocations);
+
 public class Students : IEndpointGroup
 {
     public static void Map(RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapPost(AddStudent)
+            .Produces<AddStudentResponse>()
             .RequireAuthorization()
             .RequireRateLimiting("post");
 
         groupBuilder.MapGet(GetStudentInfo)
+            .Produces<StudentInfoVm>()
             .RequireAuthorization()
             .RequireRateLimiting("get");
 
@@ -22,6 +26,7 @@ public class Students : IEndpointGroup
             .RequireRateLimiting("delete");
 
         groupBuilder.MapPut(UpdateStudent, "")
+            .Produces<UpdateStudentResponse>()
             .RequireAuthorization()
             .RequireRateLimiting("put");
     }
@@ -64,8 +69,7 @@ public class Students : IEndpointGroup
     [EndpointDescription("Deletes a student by id.")]
     public static async Task<IResult> DeleteStudent(int id, ISender sender, CancellationToken cancellationToken)
     {
-        DeleteStudentCommand command = new(id);
-        await sender.Send(command, cancellationToken);
+        await sender.Send(new DeleteStudentCommand(id), cancellationToken);
         return Results.NoContent();
     }
 
@@ -85,6 +89,6 @@ public class Students : IEndpointGroup
         CancellationToken cancellationToken)
     {
         List<string> result = await sender.Send(command, cancellationToken);
-        return Results.Ok(result);
+        return Results.Ok(new UpdateStudentResponse(result));
     }
 }

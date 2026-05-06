@@ -3,15 +3,21 @@ using Application.ShareCodes.Commands.ImportTeachingContextShareCode;
 
 namespace Web.Endpoints;
 
+public record CreateTeachingContextShareCodeResponse(string Code);
+
+public record CreateTeachingContextByShareCodeResponse(int NewTeachingContextId);
+
 public class ShareCodes : IEndpointGroup
 {
     public static void Map(RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapPost(CreateTeachingContextShareCode, "create")
+            .Produces<CreateTeachingContextShareCodeResponse>()
             .RequireAuthorization()
             .RequireRateLimiting("post");
 
         groupBuilder.MapPost(CreateTeachingContextByShareCode, "import")
+            .Produces<CreateTeachingContextByShareCodeResponse>()
             .RequireAuthorization()
             .RequireRateLimiting("post");
     }
@@ -22,8 +28,7 @@ public class ShareCodes : IEndpointGroup
         ISender sender, CancellationToken cancellationToken)
     {
         string code = await sender.Send(command, cancellationToken);
-
-        return Results.Ok(code);
+        return Results.Ok(new CreateTeachingContextShareCodeResponse(code));
     }
 
     [EndpointSummary("Import share code")]
@@ -32,7 +37,6 @@ public class ShareCodes : IEndpointGroup
         ISender sender, CancellationToken cancellationToken)
     {
         int newTeachingContextId = await sender.Send(command, cancellationToken);
-
-        return Results.Ok(newTeachingContextId);
+        return Results.Ok(new CreateTeachingContextByShareCodeResponse(newTeachingContextId));
     }
 }

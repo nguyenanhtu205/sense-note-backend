@@ -4,19 +4,24 @@ using Application.BehaviorLogs.Queries.GetStudentBehaviorLogHistory;
 
 namespace Web.Endpoints;
 
+public record LogBehaviorResponse(int LogId);
+
 public class BehaviorLogs : IEndpointGroup
 {
     public static void Map(RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapPost(LogBehavior)
+            .Produces<LogBehaviorResponse>()
             .RequireAuthorization()
             .RequireRateLimiting("post");
 
         groupBuilder.MapGet(GetStudentBehaviorLogHistory, "student")
+            .Produces<StudentBehaviorLogHistoryVm>()
             .RequireAuthorization()
             .RequireRateLimiting("get");
 
         groupBuilder.MapGet(GetClassBehaviorLogHistory, "class")
+            .Produces<ClassBehaviorLogHistoryVm>()
             .RequireAuthorization()
             .RequireRateLimiting("get");
     }
@@ -27,7 +32,7 @@ public class BehaviorLogs : IEndpointGroup
         CancellationToken cancellationToken)
     {
         int logId = await sender.Send(command, cancellationToken);
-        return Results.Ok(logId);
+        return Results.Ok(new LogBehaviorResponse(logId));
     }
 
     [EndpointSummary("Get student behavior log history")]

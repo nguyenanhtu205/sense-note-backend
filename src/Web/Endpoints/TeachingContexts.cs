@@ -3,15 +3,19 @@ using Application.TeachingContexts.Queries.GetTeachingContextsByTeacherId;
 
 namespace Web.Endpoints;
 
+public record CreateTeachingContextResponse(int NewTeachingContextId);
+
 public class TeachingContexts : IEndpointGroup
 {
     public static void Map(RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapGet(GetTeachingContextsByTeacherId)
+            .Produces<TeachingContextsVm>()
             .RequireAuthorization()
             .RequireRateLimiting("get");
 
         groupBuilder.MapPost(CreateTeachingContext)
+            .Produces<CreateTeachingContextResponse>()
             .RequireAuthorization()
             .RequireRateLimiting("post");
     }
@@ -49,6 +53,6 @@ public class TeachingContexts : IEndpointGroup
         CancellationToken cancellationToken)
     {
         int newTeachingContextId = await sender.Send(command, cancellationToken);
-        return Results.Ok(newTeachingContextId);
+        return Results.Ok(new CreateTeachingContextResponse(newTeachingContextId));
     }
 }

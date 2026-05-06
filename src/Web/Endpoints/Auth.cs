@@ -9,10 +9,22 @@ public class Auth : IEndpointGroup
 {
     public static void Map(RouteGroupBuilder groupBuilder)
     {
-        groupBuilder.MapPost(Register, "register").RequireRateLimiting("post");
-        groupBuilder.MapPost(Login, "login").RequireRateLimiting("post");
-        groupBuilder.MapPost(Logout, "logout").RequireAuthorization().RequireRateLimiting("post");
-        groupBuilder.MapPost(RefreshAccessToken, "refresh-token").RequireRateLimiting("post");
+        groupBuilder.MapPost(Register, "register")
+            .Produces<RegisterResponse>()
+            .Produces(StatusCodes.Status409Conflict)
+            .RequireRateLimiting("post");
+
+        groupBuilder.MapPost(Login, "login")
+            .Produces<LoginResponse>()
+            .RequireRateLimiting("post");
+
+        groupBuilder.MapPost(Logout, "logout")
+            .RequireAuthorization()
+            .RequireRateLimiting("post");
+
+        groupBuilder.MapPost(RefreshAccessToken, "refresh-token")
+            .Produces<RefreshAccessTokenResponse>()
+            .RequireRateLimiting("post");
     }
 
     [EndpointSummary("Register")]
@@ -37,7 +49,7 @@ public class Auth : IEndpointGroup
     public static async Task<IResult> Logout(LogoutCommand command, ISender sender, CancellationToken cancellationToken)
     {
         await sender.Send(command, cancellationToken);
-        return Results.Ok();
+        return Results.NoContent();
     }
 
     [EndpointSummary("Refresh token")]

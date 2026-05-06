@@ -10,14 +10,20 @@ public class AiServices : IEndpointGroup
     public static void Map(RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapPost("/extract-scores", ExtractScores)
+            .Produces<MedicalSensitivityScoresResponse>()
+            .Produces(StatusCodes.Status502BadGateway)
             .RequireAuthorization()
             .RequireRateLimiting("post");
 
         groupBuilder.MapPost("/get-suggested-intervention", GetSuggestedIntervention)
+            .Produces<GetSuggestedInterventionResponse>()
+            .Produces(StatusCodes.Status502BadGateway)
             .RequireAuthorization()
             .RequireRateLimiting("post");
-        
+
         groupBuilder.MapPost("/analyze-abc-trends", AnalyzeAbcTrends)
+            .Produces<AnalyzeAbcTrendsResponse>()
+            .Produces(StatusCodes.Status502BadGateway)
             .RequireAuthorization()
             .RequireRateLimiting("post");
     }

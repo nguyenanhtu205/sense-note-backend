@@ -6,15 +6,20 @@ using Application.BehaviorCategories.Commands.UpdateBehaviorCategory;
 using Application.BehaviorCategories.Queries.GetBehaviorCategoryByTeacherId;
 using Application.BehaviorCategories.Queries.GetBehaviorCategoryByTeachingContextId;
 using Microsoft.AspNetCore.Mvc;
-using BehaviorCategoriesVm = Application.BehaviorCategories.Queries.GetBehaviorCategoryByTeacherId.BehaviorCategoriesVm;
+using TeacherCategoriesVm = Application.BehaviorCategories.Queries.GetBehaviorCategoryByTeacherId.BehaviorCategoriesVm;
+using ContextCategoriesVm =
+    Application.BehaviorCategories.Queries.GetBehaviorCategoryByTeachingContextId.BehaviorCategoriesVm;
 
 namespace Web.Endpoints;
+
+public record CreateBehaviorCategoryResponse(int NewBehaviorCategoryId);
 
 public class BehaviorCategories : IEndpointGroup
 {
     public static void Map(RouteGroupBuilder groupBuilder)
     {
         groupBuilder.MapPost(CreateBehaviorCategory)
+            .Produces<CreateBehaviorCategoryResponse>()
             .RequireAuthorization()
             .RequireRateLimiting("post");
 
@@ -35,10 +40,12 @@ public class BehaviorCategories : IEndpointGroup
             .RequireRateLimiting("delete");
 
         groupBuilder.MapGet(GetBehaviorCategoriesByTeacherId)
+            .Produces<TeacherCategoriesVm>()
             .RequireAuthorization()
             .RequireRateLimiting("get");
 
         groupBuilder.MapGet(GetBehaviorCategoriesByTeachingContextId, "by-teaching-context/{teachingContextId:int}")
+            .Produces<ContextCategoriesVm>()
             .RequireAuthorization()
             .RequireRateLimiting("get");
     }
@@ -49,7 +56,7 @@ public class BehaviorCategories : IEndpointGroup
         CancellationToken cancellationToken)
     {
         int id = await sender.Send(command, cancellationToken);
-        return Results.Ok(id);
+        return Results.Ok(new CreateBehaviorCategoryResponse(id));
     }
 
     [EndpointSummary("Update behavior category")]
@@ -95,7 +102,7 @@ public class BehaviorCategories : IEndpointGroup
     public static async Task<IResult> GetBehaviorCategoriesByTeacherId(ISender sender,
         CancellationToken cancellationToken)
     {
-        BehaviorCategoriesVm result = await sender.Send(new GetBehaviorCategoryByTeacherIdQuery(), cancellationToken);
+        TeacherCategoriesVm result = await sender.Send(new GetBehaviorCategoryByTeacherIdQuery(), cancellationToken);
         return Results.Ok(result);
     }
 
@@ -104,7 +111,7 @@ public class BehaviorCategories : IEndpointGroup
     public static async Task<IResult> GetBehaviorCategoriesByTeachingContextId(int teachingContextId, ISender sender,
         CancellationToken cancellationToken)
     {
-        Application.BehaviorCategories.Queries.GetBehaviorCategoryByTeachingContextId.BehaviorCategoriesVm result =
+        ContextCategoriesVm result =
             await sender.Send(new GetBehaviorCategoriesByTeachingContextIdQuery(teachingContextId), cancellationToken);
         return Results.Ok(result);
     }
