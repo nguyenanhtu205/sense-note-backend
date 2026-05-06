@@ -11,6 +11,8 @@ public class TeachingContextDto
     public int NumRows { get; init; }
 
     public int SeatsPerTable { get; init; }
+    
+    public int ClassId { get; init; }
 
     public List<EnvironmentalAsset> EnvironmentalAssets { get; init; } = [];
 
