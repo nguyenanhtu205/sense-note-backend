@@ -3,14 +3,14 @@
 public record AddStudentResponse(int StudentId, List<string> SensitiveLocations);
 
 public record StudentSensitivityProfile(
-    int? SoundSensitivity,
-    int? LightSensitivity,
-    int? TemperatureSensitivity,
-    int? TouchSensitivity,
-    int? Distractibility,
+    int SoundSensitivity,
+    int LightSensitivity,
+    int TemperatureSensitivity,
+    int TouchSensitivity,
+    int Distractibility,
     List<string>? SensitiveTimeSlots,
-    int? OverallSensitivityLevel,
-    string? MedicalNotes
+    int OverallSensitivityLevel,
+    string MedicalNotes
 );
 
 public record AddStudentCommand(
@@ -19,7 +19,6 @@ public record AddStudentCommand(
     DateTime? BirthDay,
     int TeachingContextId,
     string DisplayName,
-    int OrdinalIndex,
     StudentSensitivityProfile StudentSensitivityProfile) : IRequest<AddStudentResponse>;
 
 public class AddStudentCommandHandler(IApplicationDbContext context)
@@ -36,11 +35,11 @@ public class AddStudentCommandHandler(IApplicationDbContext context)
         }
 
         List<string> sensitiveLocations = Student.CalculateSensitiveLocations(
-            request.StudentSensitivityProfile.SoundSensitivity ?? 0,
-            request.StudentSensitivityProfile.LightSensitivity ?? 0,
-            request.StudentSensitivityProfile.TemperatureSensitivity ?? 0,
-            request.StudentSensitivityProfile.TouchSensitivity ?? 0,
-            request.StudentSensitivityProfile.Distractibility ?? 0,
+            request.StudentSensitivityProfile.SoundSensitivity,
+            request.StudentSensitivityProfile.LightSensitivity,
+            request.StudentSensitivityProfile.TemperatureSensitivity,
+            request.StudentSensitivityProfile.TouchSensitivity,
+            request.StudentSensitivityProfile.Distractibility,
             teachingContext.NumCols, teachingContext.NumRows, teachingContext.SeatsPerTable,
             teachingContext.EnvironmentalAssets);
 
@@ -53,15 +52,15 @@ public class AddStudentCommandHandler(IApplicationDbContext context)
             [
                 new Domain.Entities.StudentSensitivityProfile
                 {
-                    SoundSensitivity = request.StudentSensitivityProfile.SoundSensitivity ?? 0,
-                    LightSensitivity = request.StudentSensitivityProfile.LightSensitivity ?? 0,
-                    TemperatureSensitivity = request.StudentSensitivityProfile.TemperatureSensitivity ?? 0,
-                    TouchSensitivity = request.StudentSensitivityProfile.TouchSensitivity ?? 0,
-                    Distractibility = request.StudentSensitivityProfile.Distractibility ?? 0,
+                    SoundSensitivity = request.StudentSensitivityProfile.SoundSensitivity,
+                    LightSensitivity = request.StudentSensitivityProfile.LightSensitivity,
+                    TemperatureSensitivity = request.StudentSensitivityProfile.TemperatureSensitivity,
+                    TouchSensitivity = request.StudentSensitivityProfile.TouchSensitivity,
+                    Distractibility = request.StudentSensitivityProfile.Distractibility,
                     SensitiveTimeSlots = request.StudentSensitivityProfile.SensitiveTimeSlots ?? [],
                     SensitiveLocations = sensitiveLocations,
-                    OverallSensitivityLevel = request.StudentSensitivityProfile.OverallSensitivityLevel ?? 0,
-                    MedicalNotes = request.StudentSensitivityProfile.MedicalNotes ?? "",
+                    OverallSensitivityLevel = request.StudentSensitivityProfile.OverallSensitivityLevel,
+                    MedicalNotes = request.StudentSensitivityProfile.MedicalNotes,
                     LastUpdated = DateTimeOffset.UtcNow
                 }
             ]
@@ -72,7 +71,7 @@ public class AddStudentCommandHandler(IApplicationDbContext context)
             TeachingContextId = request.TeachingContextId,
             Student = newStudent,
             DisplayName = request.DisplayName,
-            OrdinalIndex = request.OrdinalIndex
+            OrdinalIndex = -1
         };
 
         context.Students.Add(newStudent);

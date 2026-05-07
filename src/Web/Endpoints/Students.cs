@@ -35,14 +35,14 @@ public class Students : IEndpointGroup
     [EndpointDescription("""
                          Creates a new student.
 
-                         StudentSensitivityProfile fields:
-                         - SoundSensitivity: Sensitivity to noise (higher value = more sensitive).
-                         - LightSensitivity: Sensitivity to light intensity or sudden light changes.
-                         - TemperatureSensitivity: Sensitivity to hot/cold environments.
-                         - TouchSensitivity: Sensitivity to physical contact or proximity.
-                         - Distractibility: Tendency to be distracted by surroundings (higher value = more distractible).
+                         StudentSensitivityProfile fields (higher value = more sensitive):
+                         - SoundSensitivity: Sensitivity to noise (0-10).
+                         - LightSensitivity: Sensitivity to light intensity or sudden light changes (0-10).
+                         - TemperatureSensitivity: Sensitivity to hot/cold environments (0-10).
+                         - TouchSensitivity: Sensitivity to physical contact or proximity (0-10).
+                         - Distractibility: Tendency to be distracted by surroundings (0-10).
                          - SensitiveTimeSlots: Time ranges when the student is more sensitive (e.g. '08:00-09:00').
-                         - OverallSensitivityLevel: Overall sensitivity level (optional aggregated score).
+                         - OverallSensitivityLevel: Overall sensitivity level (0-10).
                          - MedicalNotes: Free-text notes from teacher; can be used to infer other sensitivity fields.
                          - If the sensitivity fields are not provided, the system will automatically infer
                          SoundSensitivity, LightSensitivity, TemperatureSensitivity, TouchSensitivity,
