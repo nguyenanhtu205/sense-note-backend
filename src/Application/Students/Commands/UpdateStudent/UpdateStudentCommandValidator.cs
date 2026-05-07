@@ -21,8 +21,31 @@ public class UpdateStudentCommandValidator : AbstractValidator<UpdateStudentComm
         RuleFor(x => x.DisplayName)
             .NotEmpty().WithMessage("Display name is required")
             .MaximumLength(100).WithMessage("Display name must not exceed 100 characters");
-        
+
         RuleFor(x => x.StudentSensitivityProfile)
             .NotNull().WithMessage("Student sensitivity profile must not be null");
+
+        RuleFor(x => x.StudentSensitivityProfile.SoundSensitivity)
+            .InclusiveBetween(0, 10).WithMessage("Sound sensitivity must be between 0 and 10");
+
+        RuleFor(x => x.StudentSensitivityProfile.LightSensitivity)
+            .InclusiveBetween(0, 10).WithMessage("Light sensitivity must be between 0 and 10");
+
+        RuleFor(x => x.StudentSensitivityProfile.TemperatureSensitivity)
+            .InclusiveBetween(0, 10).WithMessage("Temperature sensitivity must be between 0 and 10");
+
+        RuleFor(x => x.StudentSensitivityProfile.TouchSensitivity)
+            .InclusiveBetween(0, 10).WithMessage("Touch sensitivity must be between 0 and 10");
+
+        RuleFor(x => x.StudentSensitivityProfile.Distractibility)
+            .InclusiveBetween(0, 10).WithMessage("Distractibility must be between 0 and 10");
+
+        RuleFor(x => x.StudentSensitivityProfile.MedicalNotes)
+            .NotNull().WithMessage("Medical notes must not be null")
+            .NotEmpty().WithMessage("Medical notes must not be empty")
+            .MaximumLength(500).WithMessage("Medical notes must not exceed 500 characters");
+
+        RuleFor(x => x.StudentSensitivityProfile.OverallSensitivityLevel)
+            .InclusiveBetween(0, 10).WithMessage("Overall sensitivity level must be between 0 and 10");
     }
 }

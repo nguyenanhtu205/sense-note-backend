@@ -1,14 +1,14 @@
 ﻿namespace Application.Students.Commands.UpdateStudent;
 
 public record StudentSensitivityProfile(
-    int? SoundSensitivity,
-    int? LightSensitivity,
-    int? TemperatureSensitivity,
-    int? TouchSensitivity,
-    int? Distractibility,
+    int SoundSensitivity,
+    int LightSensitivity,
+    int TemperatureSensitivity,
+    int TouchSensitivity,
+    int Distractibility,
     List<string>? SensitiveTimeSlots,
-    int? OverallSensitivityLevel,
-    string? MedicalNotes
+    int OverallSensitivityLevel,
+    string MedicalNotes
 );
 
 public record UpdateStudentCommand(
@@ -79,44 +79,42 @@ public class UpdateStudentCommandHandler(IApplicationDbContext context)
         }
         else
         {
-            if (req.SoundSensitivity.HasValue && last.SoundSensitivity != req.SoundSensitivity.Value)
+            if (last.SoundSensitivity != req.SoundSensitivity)
             {
                 hasChange = true;
             }
 
-            if (req.LightSensitivity.HasValue && last.LightSensitivity != req.LightSensitivity.Value)
+            if (last.LightSensitivity != req.LightSensitivity)
             {
                 hasChange = true;
             }
 
-            if (req.TemperatureSensitivity.HasValue && last.TemperatureSensitivity != req.TemperatureSensitivity.Value)
+            if (last.TemperatureSensitivity != req.TemperatureSensitivity)
             {
                 hasChange = true;
             }
 
-            if (req.TouchSensitivity.HasValue && last.TouchSensitivity != req.TouchSensitivity.Value)
+            if (last.TouchSensitivity != req.TouchSensitivity)
             {
                 hasChange = true;
             }
 
-            if (req.Distractibility.HasValue && last.Distractibility != req.Distractibility.Value)
+            if (last.Distractibility != req.Distractibility)
             {
                 hasChange = true;
             }
 
-            if (req.OverallSensitivityLevel.HasValue &&
-                last.OverallSensitivityLevel != req.OverallSensitivityLevel.Value)
+            if (last.OverallSensitivityLevel != req.OverallSensitivityLevel)
             {
                 hasChange = true;
             }
 
-            if (req.SensitiveTimeSlots != null &&
-                !last.SensitiveTimeSlots.SequenceEqual(req.SensitiveTimeSlots))
+            if (req.SensitiveTimeSlots != null && !last.SensitiveTimeSlots.SequenceEqual(req.SensitiveTimeSlots))
             {
                 hasChange = true;
             }
 
-            if (req.MedicalNotes != null && last.MedicalNotes != req.MedicalNotes)
+            if (last.MedicalNotes != req.MedicalNotes)
             {
                 hasChange = true;
             }
@@ -124,11 +122,11 @@ public class UpdateStudentCommandHandler(IApplicationDbContext context)
 
         List<string> sensitiveLocations = hasChange
             ? Student.CalculateSensitiveLocations(
-                request.StudentSensitivityProfile.SoundSensitivity ?? last?.SoundSensitivity ?? 0,
-                request.StudentSensitivityProfile.LightSensitivity ?? last?.LightSensitivity ?? 0,
-                request.StudentSensitivityProfile.TemperatureSensitivity ?? last?.TemperatureSensitivity ?? 0,
-                request.StudentSensitivityProfile.TouchSensitivity ?? last?.TouchSensitivity ?? 0,
-                request.StudentSensitivityProfile.Distractibility ?? last?.Distractibility ?? 0,
+                request.StudentSensitivityProfile.SoundSensitivity,
+                request.StudentSensitivityProfile.LightSensitivity,
+                request.StudentSensitivityProfile.TemperatureSensitivity,
+                request.StudentSensitivityProfile.TouchSensitivity,
+                request.StudentSensitivityProfile.Distractibility,
                 teachingContext.NumCols, teachingContext.NumRows, teachingContext.SeatsPerTable,
                 teachingContext.EnvironmentalAssets)
             : last?.SensitiveLocations ?? [];
@@ -137,18 +135,18 @@ public class UpdateStudentCommandHandler(IApplicationDbContext context)
         {
             Domain.Entities.StudentSensitivityProfile newProfile = new()
             {
-                SoundSensitivity = req.SoundSensitivity ?? last?.SoundSensitivity ?? 0,
-                LightSensitivity = req.LightSensitivity ?? last?.LightSensitivity ?? 0,
-                TemperatureSensitivity = req.TemperatureSensitivity ?? last?.TemperatureSensitivity ?? 0,
-                TouchSensitivity = req.TouchSensitivity ?? last?.TouchSensitivity ?? 0,
-                Distractibility = req.Distractibility ?? last?.Distractibility ?? 0,
-                OverallSensitivityLevel = req.OverallSensitivityLevel ?? last?.OverallSensitivityLevel ?? 0,
+                SoundSensitivity = req.SoundSensitivity,
+                LightSensitivity = req.LightSensitivity,
+                TemperatureSensitivity = req.TemperatureSensitivity,
+                TouchSensitivity = req.TouchSensitivity,
+                Distractibility = req.Distractibility,
+                OverallSensitivityLevel = req.OverallSensitivityLevel,
                 SensitiveTimeSlots = req.SensitiveTimeSlots ?? last?.SensitiveTimeSlots ?? [],
                 SensitiveLocations = sensitiveLocations,
-                MedicalNotes = req.MedicalNotes ?? last?.MedicalNotes ?? ""
+                MedicalNotes = req.MedicalNotes
             };
 
-            profiles = profiles.TakeLast(100).ToList();
+            profiles = profiles.TakeLast(99).ToList();
 
             student.StudentSensitivityProfiles = profiles.Append(newProfile).ToList();
         }
